@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Smart Assistive Device Dashboard</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #111;
+      color: #fff;
+      text-align: center;
+      margin: 0;
+      padding: 0;
+    }
+    header {
+      background: #222;
+      padding: 1rem;
+      font-size: 1.5rem;
+      font-weight: bold;
+    }
+    main {
+      padding: 1rem;
+    }
+    .alert-box {
+      margin: 1rem auto;
+      padding: 1rem;
+      border-radius: 10px;
+      width: 80%;
+      font-size: 1.2rem;
+      transition: background 0.3s, transform 0.3s;
+    }
+    .safe { background: #2e7d32; }
+    .warning { background: #f9a825; }
+    .danger { background: #c62828; }
+    
+    button {
+      margin: 0.5rem;
+      padding: 0.7rem 1.2rem;
+      font-size: 1rem;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      background: #444;
+      color: white;
+    }
+    button:hover { background: #666; }
+    
+    .settings {
+      margin-top: 2rem;
+      text-align: left;
+      background: #222;
+      padding: 1rem;
+      border-radius: 10px;
+      width: 80%;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    .settings label {
+      display: block;
+      margin: 0.5rem 0;
+    }
+    .slider {
+      width: 100%;
+    }
+    footer {
+      margin-top: 2rem;
+      padding: 1rem;
+      font-size: 0.9rem;
+      background: #222;
+    }
+  </style>
+</head>
+<body>
+  <header>♿ Smart Assistive Device Dashboard</header>
+  
+  <main>
+    <div id="alert" class="alert-box safe">✅ Safe: No danger detected.</div>
+    
+    <button onclick="simulateAlert('safe')">Safe</button>
+    <button onclick="simulateAlert('warning')">Warning</button>
+    <button onclick="simulateAlert('danger')">Danger</button>
+    
+    <div class="settings">
+      <h2>⚙️ Advanced Settings</h2>
+      
+      <label for="sensitivity">Obstacle Sensitivity: 
+        <span id="sensitivityValue">5</span>
+      </label>
+      <input type="range" min="1" max="10" value="5" class="slider" id="sensitivity" oninput="updateSensitivity(this.value)">
+      
+      <label>
+        <input type="checkbox" id="audioAlert" checked>
+        Enable Audio Alerts
+      </label>
+      
+      <label>
+        <input type="checkbox" id="vibrationAlert">
+        Enable Vibration Alerts (mobile supported)
+      </label>
+    </div>
+  </main>
+  
+  <footer>
+    Designed for Wheelchair & Smart Stick Users | Accessible Dashboard
+  </footer>
+  
+  <script>
+    const alertBox = document.getElementById("alert");
+    const sensitivityValue = document.getElementById("sensitivityValue");
+
+    function simulateAlert(type) {
+      if (type === "safe") {
+        alertBox.className = "alert-box safe";
+        alertBox.textContent = "✅ Safe: No danger detected.";
+        speak("Safe. No danger detected.");
+      } else if (type === "warning") {
+        alertBox.className = "alert-box warning";
+        alertBox.textContent = "⚠️ Warning: Obstacle nearby!";
+        speak("Warning. Obstacle nearby.");
+      } else if (type === "danger") {
+        alertBox.className = "alert-box danger";
+        alertBox.textContent = "🚨 Danger: Immediate action required!";
+        speak("Danger. Immediate action required!");
+        vibrate();
+      }
+    }
+
+    function updateSensitivity(value) {
+      sensitivityValue.textContent = value;
+      speak("Sensitivity set to " + value);
+    }
+
+    function speak(message) {
+      if (document.getElementById("audioAlert").checked) {
+        let msg = new SpeechSynthesisUtterance(message);
+        msg.lang = "en-US";
+        window.speechSynthesis.speak(msg);
+      }
+    }
+
+    function vibrate() {
+      if (document.getElementById("vibrationAlert").checked && navigator.vibrate) {
+        navigator.vibrate([300, 200, 300]); // vibrate pattern
+      }
+    }
+  </script>
+</body>
+</html>
